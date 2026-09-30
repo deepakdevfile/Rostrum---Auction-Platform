@@ -1,0 +1,97 @@
+# ==========================================
+# Operating System & Editor Files
+# ==========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.swp
+*.swo
+
+# IDE & Editor Settings
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ==========================================
+# Environment Variables & Secrets (CRITICAL)
+# ==========================================
+.env
+.env*
+!.env.example
+
+# ==========================================
+# Frontend: Next.js / Node.js
+# ==========================================
+# Dependencies
+frontend/node_modules/
+frontend/.pnpm-store/
+
+# Next.js Build Output
+frontend/.next/
+frontend/out/
+
+# Production / Dist builds
+frontend/build/
+frontend/dist/
+
+# Logs
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+
+# Vercel
+frontend/.vercel
+
+# Next.js telemetry & cache
+frontend/.next/cache/
+frontend/*.tsbuildinfo
+
+# ==========================================
+# Backend: Python / FastAPI
+# ==========================================
+# Byte-compiled / optimized files
+backend/__pycache__/
+backend/*.py[cod]
+backend/*$py.class
+
+# Virtual Environments
+backend/venv/
+backend/.venv/
+backend/env/
+backend/ENV/
+backend/env.bak/
+backend/venv.bak/
+
+# Testing & Coverage
+backend/.pytest_cache/
+backend/.coverage
+backend/htmlcov/
+backend/.mypy_cache/
+backend/.ruff_cache/
+
+# ==========================================
+# Database & Docker
+# ==========================================
+# Local PostgreSQL storage data (if mounted locally)
+postgres_data/
+pgdata/
+*.sqlite3
+
+# Docker local logs
+*.log
+
+frontend/styles
+frontend/componentes
