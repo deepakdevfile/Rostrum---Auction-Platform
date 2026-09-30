@@ -2,18 +2,33 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            Welcome User, to Rostrum
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Are you ready for the BET?
-          </p>
-        </div>
-      </main>
+    <div>
+      <section className="border-b border-hairline pb-10">
+        <h1 className="max-w-2xl font-display text-5xl leading-[1.05] text-paper">
+          The floor is open.
+        </h1>
+        <p className="mt-4 max-w-md text-dim">
+          Bid live, watch the price move in real time, and see the seller on
+          camera before the gavel falls.
+        </p>
+      </section>
+      <section className="mt-10">
+        <h2 className="mb-2 font-display text-2xl text-paper">Live now</h2>
+        <div>live bids</div>
+      </section>
+      <section className="mt-10">
+        <h2 className="mb-2 font-display text-2xl text-paper">Opening soon</h2>
+        <div>upcoming bids</div>
+      </section>
+      <section className="mt-10">
+        <h2 className="mb-2 font-display text-2xl text-paper">
+          Recently closed
+        </h2>
+        <div>closed bids</div>
+      </section>
+      <p className="mt-10 text-dim">
+        No lots listed yet. Sign in and list to open the first floor.
+      </p>
     </div>
   );
 }
