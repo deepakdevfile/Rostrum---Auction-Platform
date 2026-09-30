@@ -92,6 +92,3 @@ pgdata/
 
 # Docker local logs
 *.log
-
-frontend/styles
-frontend/componentes
