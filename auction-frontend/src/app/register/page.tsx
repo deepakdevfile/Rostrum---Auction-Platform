@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import React, { useState } from "react";
-import { UserRole } from "@/src/types/models";
-import { useRouter } from "next/router";
+import { UserRole } from "@/types/models";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-content";
 import { api } from "@/lib/api";
 
@@ -27,6 +27,7 @@ export default function RegisterPage(){
       setError(null);
       try{
         const res = await api.register(email, username, password, role)
+        // console.log(res);
         setSession(res.access_token, res.user);
         router.push("/")
       } catch{
