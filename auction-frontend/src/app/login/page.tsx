@@ -2,12 +2,17 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
+import { useAuth } from "@/lib/auth-content";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const { setSession } = useAuth();
+  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.SubmitEvent){
     e.preventDefault();
@@ -15,8 +20,12 @@ export default function LoginPage() {
     
     try{
       const res = await api.login(email, password);
+      // console.log(res);
+      // console.log("all okay");
+      setSession(res.access_token, res.user);
+      router.push("/");
     } catch(err){
-
+      setError(err instanceof ApiError ? "Email or password is wrong.": "Something went wrong.")
     } finally {
       setSubmitting(false);
     }
@@ -47,6 +56,7 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
+        {error && <p className="text-sm text-fall">{error}</p> }
         <button
           type="submit"
           disabled={submitting}
