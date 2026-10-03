@@ -5,7 +5,7 @@ from app.core.config import get_settings
 
 settings = get_settings()
 
-app = FastAPI()
+app = FastAPI(title=settings.APP_NAME)
 
 app.add_middleware(
     CORSMiddleware,
