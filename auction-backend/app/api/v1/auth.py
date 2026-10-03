@@ -32,3 +32,7 @@ async def register(payload: UserCreate, db: AsyncSession = Depends(get_db)):
 
     token = create_access_token(user.id, user.role.value)
     return Token(access_token = token, user = UserOut.model_validate(user))
+
+@router.post("/login")
+async def login():
+    return "all good request is recieved"

@@ -46,6 +46,12 @@ export const api = {
             method: "POST",
             body: JSON.stringify({ email, username, password, role }),
         }),
+
+    login: (email: string, password: string) => 
+        request<AuthResponse>("/api/v1/auth/login", {
+            method: "POST",
+            body: JSON.stringify({ email, password }),
+        }),
 }
 
 export { ApiError }
