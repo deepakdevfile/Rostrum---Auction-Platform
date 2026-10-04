@@ -2,6 +2,7 @@
 
 import { useAuth } from "@/lib/auth-content";
 import { useState } from "react";
+import { api } from "@/lib/api";
 
 function toLocalInputValue(date: Date): string {
     const offset = date.getTimezoneOffset();
@@ -38,6 +39,15 @@ export default function CreateRoomPage(){
     //   console.log(endsAt);
         setSubmitting(true);
         try{
+            const room = await api.createRoom(token!, {
+                title, 
+                description,
+                starting_price: parseFloat(startingPrice),
+                bid_increment: parseFloat(bidIncrement),
+                starts_at: new Date(startsAt).toISOString(),
+                ends_at: new Date(endsAt).toISOString(),
+                item: { name: itemName, image_url: imageUrl || undefined },
+            });
 
         } catch {
 

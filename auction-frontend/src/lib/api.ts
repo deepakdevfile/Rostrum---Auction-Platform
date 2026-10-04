@@ -1,4 +1,4 @@
-import type { User } from "@/types/models";
+import type { User, RoomDetail } from "@/types/models";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -52,6 +52,23 @@ export const api = {
             method: "POST",
             body: JSON.stringify({ email, password }),
         }),
+
+    createRoom: (
+        token: string,
+        payload: {
+            title: string;
+            description?: string;
+            starting_price: number;
+            bid_increment: number;
+            starts_at: string;
+            ends_at: string;
+            item: { name: string; description?: string; image_url?: string};
+        }
+    ) => request<RoomDetail>("/api/v1/rooms", {
+        method: "POST",
+        token,
+        body: JSON.stringify(payload),
+    })
 }
 
 export { ApiError }
