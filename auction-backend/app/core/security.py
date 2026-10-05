@@ -1,7 +1,7 @@
 from uuid import UUID
 from datetime import datetime, timezone, timedelta
 from app.core.config import get_settings
-from jose import jwt
+from jose import jwt, JWTError
 from pwdlib import PasswordHash
 from pwdlib.hashers.bcrypt import BcryptHasher
 
@@ -18,3 +18,9 @@ def create_access_token(user_id: UUID, role: str) -> str:
 
 def verify_password(plain: str, hashed: str) -> bool:
     return password_hash.verify(plain, hashed)
+
+def decode_access_token(token: str) -> dict | None:
+    try: 
+        return jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+    except JWTError:
+        return None
