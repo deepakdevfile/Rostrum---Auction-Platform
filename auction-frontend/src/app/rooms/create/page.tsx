@@ -3,6 +3,7 @@
 import { useAuth } from "@/lib/auth-content";
 import { useState } from "react";
 import { api } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 function toLocalInputValue(date: Date): string {
     const offset = date.getTimezoneOffset();
@@ -22,6 +23,9 @@ export default function CreateRoomPage(){
     const [startsAt, setStartsAt] = useState(toLocalInputValue(new Date(Date.now() + 5 * 60_000)));
     const [endsAt, setEndsAt] = useState(toLocalInputValue(new Date(Date.now() + 65 * 60_000)));
     const [submitting, setSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const router = useRouter();
 
     if(!user || !token){
         return <p className="text-dim">Sign in as a seller to list an item.</p>
@@ -38,6 +42,7 @@ export default function CreateRoomPage(){
     //   console.log(startsAt);
     //   console.log(endsAt);
         setSubmitting(true);
+        setError(null);
         try{
             const room = await api.createRoom(token!, {
                 title, 
@@ -48,9 +53,9 @@ export default function CreateRoomPage(){
                 ends_at: new Date(endsAt).toISOString(),
                 item: { name: itemName, image_url: imageUrl || undefined },
             });
-
+            router.push(`/rooms/${room.id}`)
         } catch {
-
+            setError("Couldn't create that lot. Check the times and try again.")
         } finally{
             setSubmitting(false);
         }
@@ -170,10 +175,11 @@ export default function CreateRoomPage(){
               />
             </div>
           </div>
+          {error && <p className="text-sm text-fall">{error}</p>}
           <button 
             type="submit"
             className="w-full bg-brass py-2.5 font-medium text-ink transition-opacity hover:opacity-90 disabled:opacity-50">
-            Create lot
+            {submitting ? "Creating..." : "Create lot"}
           </button>
         </form>
       </div>
