@@ -28,11 +28,25 @@ export default function RoomPage(){
           .finally(() => setLoading(false));
     }, [id]);
 
+    if(loading){
+        return (
+            <p className="text-dim">Loading the floor...</p>
+        )
+    }
+
+    if(!room){
+        return (
+            <p className="text-dim">This lot couldn't be found.</p>
+        )
+    }
+
+    const item = room.items[0];
+
     return (
         <div>
             <div className="flex item-baseline justify-between border-hairline pb-6">
                 <div>
-                    <h1 className="font-display text-3xl text-paper">room title</h1>
+                    <h1 className="font-display text-3xl text-paper">{room.title}</h1>
                     <p className="mt-1 max-w-xl text-dim">item description </p>
                 </div>
                 <div className="text-right text-sm text-dim">

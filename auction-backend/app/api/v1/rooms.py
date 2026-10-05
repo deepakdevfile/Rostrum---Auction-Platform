@@ -1,7 +1,8 @@
 import uuid
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 
 from app.schemas.room import RoomCreate, RoomDetail, RoomOut
 from app.db.session import get_db
@@ -48,6 +49,13 @@ async def create_room(
     # return "Okay, I can listen, send the payload"
     return RoomDetail(**RoomOut.model_validate(room).model_dump(), items=[item])
 
-@router.get("/{room_id}")
-async def get_room(room_id: uuid.UUID):
-    return "backend is listening, will shortly be sending data"
+@router.get("/{room_id}", response_model=RoomDetail)
+async def get_room(room_id: uuid.UUID, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(AuctionRoom).where(AuctionRoom.id == room_id))
+    room = result.scalar_one_or_none()
+    if room is None:
+        raise HTTPException(404, "room_not_found")
+
+    items_result = await db.execute(select(Item).where(Item.room_id == room_id))
+    items = items_result.scalars().all()
+    return RoomDetail(**RoomOut.model_validate(room).model_dump(), items = items)
