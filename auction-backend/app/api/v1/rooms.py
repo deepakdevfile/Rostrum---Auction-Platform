@@ -1,3 +1,5 @@
+import uuid
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -45,3 +47,7 @@ async def create_room(
 
     # return "Okay, I can listen, send the payload"
     return RoomDetail(**RoomOut.model_validate(room).model_dump(), items=[item])
+
+@router.get("/{room_id}")
+async def get_room(room_id: uuid.UUID):
+    return "backend is listening, will shortly be sending data"

@@ -1,8 +1,33 @@
+'use client'
 
+import { useParams } from "next/navigation"
+import { useEffect, useState } from "react"
+import { api } from "@/lib/api";
+
+import type { RoomDetail } from "@/types/models";
 
 
 
 export default function RoomPage(){
+    const { id } = useParams<{ id: string }>();
+
+    const [room, setRoom] = useState<RoomDetail | null>(null);
+    // const [bids, setBids] = useState<Bid[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if(!id){
+            return;
+        }
+        Promise.all([api.getRoom(id)]) //api.getOrderBook(id)
+          .then(([roomRes]) => {
+            //bidsRes
+            setRoom(roomRes);
+            // setBids(bidsRes);
+          })
+          .finally(() => setLoading(false));
+    }, [id]);
+
     return (
         <div>
             <div className="flex item-baseline justify-between border-hairline pb-6">

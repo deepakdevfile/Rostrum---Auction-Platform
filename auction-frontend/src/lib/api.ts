@@ -68,7 +68,9 @@ export const api = {
         method: "POST",
         token,
         body: JSON.stringify(payload),
-    })
+    }),
+
+    getRoom: (roomId: string) => request<RoomDetail>(`/api/v1/rooms/${roomId}`),
 }
 
 export { ApiError }
