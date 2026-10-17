@@ -3,14 +3,16 @@
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { api } from "@/lib/api";
-
+import { VideoRoom } from "@/components/VideoRoom";
 import { Countdown } from "@/components/Countdown"
 import type { RoomDetail } from "@/types/models";
+import { useAuth } from "@/lib/auth-content";
 
 
 
 export default function RoomPage(){
     const { id } = useParams<{ id: string }>();
+    // const { user, token } = useAuth();
 
     const [room, setRoom] = useState<RoomDetail | null>(null);
     // const [bids, setBids] = useState<Bid[]>([]);
@@ -28,6 +30,8 @@ export default function RoomPage(){
           })
           .finally(() => setLoading(false));
     }, [id]);
+
+    // const rtc = useWebRTC(id, token, user?.id ?? null)
 
     if(loading){
         return (
@@ -55,7 +59,7 @@ export default function RoomPage(){
           <div className="text-right text-sm text-dim">
             <div>Closes in</div>
             <div className="text-lg">
-                <Countdown endsAt={room.ends_at} />
+              <Countdown endsAt={room.ends_at} />
             </div>
           </div>
         </div>
@@ -70,7 +74,15 @@ export default function RoomPage(){
                 referrerPolicy="no-referrer"
               />
             )}
-            video room component
+            <VideoRoom />
+            {/* localStream = {rtc.localStream}
+            remotePeers = {rtc.remotePeers}
+            joined = {rtc.joined}
+            screenSharing = {rtc.screenSharing}
+            onJoin = {rtc.join}
+            onLeave = {rtc.leave}
+            onToggleScreenShare = {rtc.toggleScreenShare} */}
+
             <div className="h-64 border border-hairline bg-surface p-4">
               <div className="mb-2 text-sm text-dim">Price ticker</div>
               <div className="h-[calc(100%-1.5rem)]">price chart component</div>
