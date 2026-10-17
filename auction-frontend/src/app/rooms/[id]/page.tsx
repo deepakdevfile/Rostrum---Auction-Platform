@@ -12,7 +12,7 @@ import { useAuth } from "@/lib/auth-content";
 
 export default function RoomPage(){
     const { id } = useParams<{ id: string }>();
-    // const { user, token } = useAuth();
+    const { user, token } = useAuth();
 
     const [room, setRoom] = useState<RoomDetail | null>(null);
     // const [bids, setBids] = useState<Bid[]>([]);
@@ -31,7 +31,7 @@ export default function RoomPage(){
           .finally(() => setLoading(false));
     }, [id]);
 
-    // const rtc = useWebRTC(id, token, user?.id ?? null)
+    const rtc = useWebRTC(id, token, user?.id ?? null)
 
     if(loading){
         return (
@@ -74,14 +74,15 @@ export default function RoomPage(){
                 referrerPolicy="no-referrer"
               />
             )}
-            <VideoRoom />
-            {/* localStream = {rtc.localStream}
-            remotePeers = {rtc.remotePeers}
-            joined = {rtc.joined}
-            screenSharing = {rtc.screenSharing}
-            onJoin = {rtc.join}
-            onLeave = {rtc.leave}
-            onToggleScreenShare = {rtc.toggleScreenShare} */}
+            <VideoRoom
+              localStream={rtc.localStream}
+              remotePeers={rtc.remotePeers}
+              joined={rtc.joined}
+              screenSharing={rtc.screenSharing}
+              onJoin={rtc.join}
+              onLeave={rtc.leave}
+              onToggleScreenShare={rtc.toggleScreenShare}
+            />
 
             <div className="h-64 border border-hairline bg-surface p-4">
               <div className="mb-2 text-sm text-dim">Price ticker</div>
