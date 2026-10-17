@@ -3,13 +3,24 @@ from uuid import UUID
 
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
+from redis.asyncio import Redis
 from fastapi.security import OAuth2PasswordBearer
 
+from app.core.config import get_settings
 from app.db.session import get_db
 from app.models.user import User
 from app.core.security import decode_access_token
 
+settings = get_settings()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl = "/api/v1/auth/login")
+
+_redis: Redis | None = None
+
+def get_redis() -> Redis:
+    global _redis
+    if _redis is None: 
+        _redis = Redis.from_url(settings.REDIS_URL, decode_responses=True)
+    return _redis
 
 async def get_current_user(
         token: Annotated[str, Depends(oauth2_scheme)],
