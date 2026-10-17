@@ -3,12 +3,11 @@
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { api } from "@/lib/api";
-import { VideoRoom } from "@/components/VideoRoom";
-import { Countdown } from "@/components/Countdown"
-import type { RoomDetail } from "@/types/models";
 import { useAuth } from "@/lib/auth-content";
-
-
+import { useWebRTC } from "@/hooks/useWebRTC";
+import { VideoRoom } from "@/components/VideoRoom";
+import { Countdown } from "@/components/Countdown";
+import type { RoomDetail } from "@/types/models";
 
 export default function RoomPage(){
     const { id } = useParams<{ id: string }>();
@@ -64,7 +63,7 @@ export default function RoomPage(){
           </div>
         </div>
 
-        <div className="mt-8 grid grid-cols-1 gap-6 lg: grid-cols-[2fr_1fr]">
+        <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[2fr_1fr]">
           <div className="space-y-6">
             {item?.image_url && (
               <img

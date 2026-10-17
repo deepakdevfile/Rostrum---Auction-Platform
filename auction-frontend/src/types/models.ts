@@ -28,3 +28,10 @@ export interface Room {
 export interface RoomDetail extends Room {
     items: Item[];
 }
+
+export type SignalMessage = 
+    | { type: "peer_joined"; from_peer: string; role: string }
+    | { type: "peer_left"; from_peer: string }
+    | { type: "offer"; from_peer: string; sdp: RTCSessionDescriptionInit; to_peer?: string }
+    | { type: "answer"; from_peer: string; sdp: RTCSessionDescriptionInit; to_peer?: string }
+    | { type: "ice_candidate"; from_peer: string; candidate: RTCIceCandidateInit; to_peer?: string }
