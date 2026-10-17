@@ -11,6 +11,11 @@ class Settings(BaseSettings):
 
     DATABASE_URL: str
 
+    STUN_SERVERS: list[str] = ["stun:stun.l.google.com:19302"]
+    TURN_URL: str | None = None
+    TURN_USERNAME: str | None = None
+    TURN_CREDENTIAL: str | None = None
+
     CORS_ORIGINS: list[str]
 
 
