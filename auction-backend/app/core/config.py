@@ -11,6 +11,12 @@ class Settings(BaseSettings):
 
     DATABASE_URL: str
 
+    REDIS_URL: str
+    REDIS_ROOM_CHANNEL_PREFIX: str = "room:"
+    REDIS_TICKER_CHANNEL_PREFIX: str = "ticker:"
+    REDIS_WEBRTC_CHANNEL_PREFIX: str = "webrtc:"
+
+
     STUN_SERVERS: list[str] = ["stun:stun.l.google.com:19302"]
     TURN_URL: str | None = None
     TURN_USERNAME: str | None = None

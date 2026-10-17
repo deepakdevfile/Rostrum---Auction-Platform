@@ -32,3 +32,13 @@ async def get_current_user(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="user_not_found"
         )
     return user
+
+async def get_current_user_ws(token: str, db: AsyncSession) -> User | None:
+    payload = decode_access_token(token)
+    if payload is None:
+        return None
+    try: 
+        user_id = UUID(payload["sub"])
+    except(KeyError, ValueError):
+        return None
+    return await db.get(User, user_id)
