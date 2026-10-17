@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { wsUrl } from "@/lib/api";
+import { api } from "@/lib/api";
 import type { SignalMessage } from "@/types/models";
 
 interface RemotePeer {

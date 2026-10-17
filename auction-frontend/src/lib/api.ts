@@ -2,6 +2,11 @@ import type { User, RoomDetail } from "@/types/models";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+export function wsUrl(path: string, token: string): string {
+    const base = process.env.NEXT_PUBLIC_WS_URL;
+    return `${base}${path}?token=${encodeURIComponent(token)}`;
+}
+
 class ApiError extends Error{
     status: number;
     constructor(status: number, message: string){
@@ -41,36 +46,39 @@ export interface AuthResponse {
 }
 
 export const api = {
-    register: (email: string, username: string, password: string, role: string) => 
-        request<AuthResponse>("/api/v1/auth/register", {
-            method: "POST",
-            body: JSON.stringify({ email, username, password, role }),
-        }),
-
-    login: (email: string, password: string) => 
-        request<AuthResponse>("/api/v1/auth/login", {
-            method: "POST",
-            body: JSON.stringify({ email, password }),
-        }),
-
-    createRoom: (
-        token: string,
-        payload: {
-            title: string;
-            description?: string;
-            starting_price: number;
-            bid_increment: number;
-            starts_at: string;
-            ends_at: string;
-            item: { name: string; description?: string; image_url?: string};
-        }
-    ) => request<RoomDetail>("/api/v1/rooms", {
-        method: "POST",
-        token,
-        body: JSON.stringify(payload),
+  register: (email: string, username: string, password: string, role: string) =>
+    request<AuthResponse>("/api/v1/auth/register", {
+      method: "POST",
+      body: JSON.stringify({ email, username, password, role }),
     }),
 
-    getRoom: (roomId: string) => request<RoomDetail>(`/api/v1/rooms/${roomId}`),
-}
+  login: (email: string, password: string) =>
+    request<AuthResponse>("/api/v1/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    }),
+
+  getRoom: (roomId: string) => request<RoomDetail>(`/api/v1/rooms/${roomId}`),
+
+  createRoom: (
+    token: string,
+    payload: {
+      title: string;
+      description?: string;
+      starting_price: number;
+      bid_increment: number;
+      starts_at: string;
+      ends_at: string;
+      item: { name: string; description?: string; image_url?: string };
+    },
+  ) =>
+    request<RoomDetail>("/api/v1/rooms", {
+      method: "POST",
+      token,
+      body: JSON.stringify(payload),
+    }),
+
+    iceConfig: () => request<{ iceServers: RTCIceServer[] }>("/rtc/ice-config"),
+};
 
 export { ApiError }
