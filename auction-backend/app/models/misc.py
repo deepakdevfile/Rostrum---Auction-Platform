@@ -15,7 +15,7 @@ class ParticipantRole(str, enum.Enum):
     observer = "observer"
 
 class WebRTCSession(Base):
-    __tablename__ = "webrtc_session"
+    __tablename__ = "webrtc_sessions"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     room_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("auction_rooms.id", ondelete="CASCADE"))

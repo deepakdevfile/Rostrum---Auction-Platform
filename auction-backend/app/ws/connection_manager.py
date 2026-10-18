@@ -21,7 +21,7 @@ class RoomConnectionManager:
         self._listener_task: asyncio.Task | None = None
 
     async def startup(self, redis_url: str) -> None:
-        self._redis = Redis.from_url(redis_url, decode_response = True)
+        self._redis = Redis.from_url(redis_url, decode_responses = True)
         self._listener_task = asyncio.create_task(self._listen())
         logger.info("connection manager subscriber to %s* on redis", self._prefix)
 
@@ -70,5 +70,5 @@ class RoomConnectionManager:
     def local_connection_count(self, room_id: str) -> int:
         return len(self._local.get(room_id, ()))
 
-
+room_manager = RoomConnectionManager(settings.REDIS_ROOM_CHANNEL_PREFIX)
 webrtc_manager = RoomConnectionManager(settings.REDIS_WEBRTC_CHANNEL_PREFIX)
