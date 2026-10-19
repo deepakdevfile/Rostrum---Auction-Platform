@@ -90,7 +90,8 @@ export default function RoomPage(){
           </div>
 
           <div className="space-y-6">
-            Bid panel component order book component winner status
+            <BidPanel />
+            order book component winner status
           </div>
         </div>
       </div>

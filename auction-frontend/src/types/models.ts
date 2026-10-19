@@ -7,6 +7,8 @@ export interface User {
     role: UserRole;
 }
 
+export type RoomStatus = "scheduled" | "live" | "ended" | "cancelled";
+
 export interface Item {
     id: string;
     name: string;
