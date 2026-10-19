@@ -21,8 +21,12 @@ export interface Room {
     seller_id: string,
     title: string,
     description: string | null;
+    status: RoomStatus;
     starting_price: number;
+    current_price: number;
     bid_increment: number;
+    winner_id: string | null;
+    version: number;
     starts_at: string;
     ends_at: string;
 }

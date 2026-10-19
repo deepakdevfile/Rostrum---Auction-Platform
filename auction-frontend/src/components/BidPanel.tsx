@@ -1,4 +1,6 @@
+"use client";
 
+import { useState } from "react";
 import type { RoomStatus } from "@/types/models"
 
 interface Props {
@@ -28,7 +30,7 @@ export function BidPanel({
     isAuthenticated,
 }: Props){
     const minNext = currentPrice + bidIncrement;
-    
+    const [customAmount, setCustomAmount] = useState<string>("")
 
     const quickAmounts = [minNext, minNext + bidIncrement, minNext + 4 * bidIncrement];
 
@@ -56,14 +58,34 @@ export function BidPanel({
             ) : (
                 <div>
                     {quickAmounts.map((amount) => (
-                        <button>
+                        <button
+                            key={amount}
+                            onClick={() => onBid(amount)}
+                            disabled={!connected}
+                        >
                             Bid ${amount.toLocaleString()}
                         </button>
                     ))}
 
                     <div>
-                        <input type="text" />
-                        <button>
+                        <input 
+                            type="number" 
+                            min={minNext}
+                            step={bidIncrement}
+                            value={customAmount}
+                            onChange={(e) => setCustomAmount(e.target.value)}
+                            placeholder={`${minNext} or more`}
+                        />
+                        <button
+                            onClick={() => {
+                                const value = parseFloat(customAmount);
+                                if(!Number.isNaN(value)){
+                                    onBid(value);
+                                    setCustomAmount("")
+                                }
+                            }}
+                            disabled={!connected}
+                        >
                             Place bid
                         </button>
                     </div>

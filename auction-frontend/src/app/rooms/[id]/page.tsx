@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth-content";
 import { useWebRTC } from "@/hooks/useWebRTC";
+import { BidPanel } from "@/components/BidPanel";
 import { VideoRoom } from "@/components/VideoRoom";
 import { Countdown } from "@/components/Countdown";
 import type { RoomDetail } from "@/types/models";
@@ -30,6 +31,7 @@ export default function RoomPage(){
           .finally(() => setLoading(false));
     }, [id]);
 
+    const { connected, liveState, lastBid, rejection, placeBid } = useBidSocket(id, token);
     const rtc = useWebRTC(id, token, user?.id ?? null)
 
     if(loading){
@@ -44,6 +46,7 @@ export default function RoomPage(){
         )
     }
 
+    const currentPrice = liveState.status ? liveState.currentPrice : room.current_price;
     const item = room.items[0];
 
     return (
@@ -90,7 +93,15 @@ export default function RoomPage(){
           </div>
 
           <div className="space-y-6">
-            <BidPanel />
+            <BidPanel 
+              currentPrice = {currentPrice}
+              bidIncrement = {room.bid_increment}
+              status = {status}
+              connected = {connected}
+              rejection = {rejection}
+              onBid = {placeBid}
+              isAuthenticated = {!!user}
+            />
             order book component winner status
           </div>
         </div>
