@@ -1,9 +1,10 @@
-'use client'
+'use client';
 
-import { useParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth-content";
+import { useBidSocket } from "@/hooks/useBidSocket";
 import { useWebRTC } from "@/hooks/useWebRTC";
 import { BidPanel } from "@/components/BidPanel";
 import { VideoRoom } from "@/components/VideoRoom";
@@ -47,6 +48,7 @@ export default function RoomPage(){
     }
 
     const currentPrice = liveState.status ? liveState.currentPrice : room.current_price;
+    const status = liveState.status ?? room.status;
     const item = room.items[0];
 
     return (

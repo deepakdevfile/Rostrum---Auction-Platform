@@ -35,6 +35,13 @@ export interface RoomDetail extends Room {
     items: Item[];
 }
 
+export type BidSocketServerMessage = 
+    | { type: "sync"; room_id: string; current_price: number; version: number; status: RoomStatus }
+    | { type: "bid_accepted"; room_id: string; bid: { id: string; bidder_id: string; amount: number; created_at: string }; current_price: number; version: number }
+    | { type: "bid_rejected"; reason: string; current_price: number; min_next_bid: number }
+    | { type: "room_status"; room_id: string; status: RoomStatus; winner_id?: string | null }
+    | { type: "error"; reason: string };
+
 export type SignalMessage = 
     | { type: "peer_joined"; from_peer: string; role: string }
     | { type: "peer_left"; from_peer: string }
