@@ -133,7 +133,14 @@ export default function RoomPage(){
             />
             <OrderBook bids={bids} /> 
             
-            winner status
+            {status === "ended" && room.winner_id && (
+              <div className="border border-brass/40 bg-brass/10 px-4 py-3 text-sm text-brass">
+                {room.winner_id === user?.id
+                  ? "You won this lot. Check your orders for payment status."
+                  : "This lot has sold."
+                }
+              </div>
+            )}
           </div>
         </div>
       </div>
