@@ -5,9 +5,11 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth-content";
 import { useBidSocket } from "@/hooks/useBidSocket";
+import { usePriceTicker } from "";
 import { useWebRTC } from "@/hooks/useWebRTC";
 import { BidPanel } from "@/components/BidPanel";
 import { OrderBook } from "@/components/OrderBook";
+import { PriceChart } from "@/components/PriceChart";
 import { VideoRoom } from "@/components/VideoRoom";
 import { Countdown } from "@/components/Countdown";
 import type { RoomDetail, Bid } from "@/types/models";
@@ -33,6 +35,7 @@ export default function RoomPage(){
     }, [id]);
 
     const { connected, liveState, lastBid, rejection, placeBid } = useBidSocket(id, token);
+    const { ticks } = usePriceTicker(id);
     const rtc = useWebRTC(id, token, user?.id ?? null)
 
     useEffect(() => {
@@ -112,7 +115,9 @@ export default function RoomPage(){
 
             <div className="h-64 border border-hairline bg-surface p-4">
               <div className="mb-2 text-sm text-dim">Price ticker</div>
-              <div className="h-[calc(100%-1.5rem)]">price chart component</div>
+              <div className="h-[calc(100%-1.5rem)]">
+                <PriceChart ticks = {ticks} />
+              </div>
             </div>
           </div>
 

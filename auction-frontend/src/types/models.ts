@@ -44,6 +44,11 @@ export interface Bid {
     created_at: string;
 }
 
+export interface PriceTick {
+    price: number;
+    ts: string;
+}
+
 export type BidSocketServerMessage = 
     | { type: "sync"; room_id: string; current_price: number; version: number; status: RoomStatus }
     | { type: "bid_accepted"; room_id: string; bid: { id: string; bidder_id: string; amount: number; created_at: string }; current_price: number; version: number }
