@@ -8,12 +8,13 @@ from app.api.deps import get_redis
 from app.api.v1 import api_router, ws_router
 from app.core.config import get_settings
 from app.services import room_lifecycle
-from app.ws.connection_manager import webrtc_manager
+from app.ws.connection_manager import webrtc_manager, room_manager
 
 settings = get_settings()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    await room_manager.startup(settings.REDIS_URL)
     await webrtc_manager.startup(settings.REDIS_URL)
 
     redis = get_redis()
@@ -22,6 +23,7 @@ async def lifespan(app: FastAPI):
     yield
 
     lifecycle_task.cancel()
+    await room_manager.shutdown()
     await webrtc_manager.shutdown()
 
 app = FastAPI(title=settings.APP_NAME, lifespan=lifespan)
