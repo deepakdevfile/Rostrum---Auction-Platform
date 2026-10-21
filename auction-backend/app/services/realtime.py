@@ -1,9 +1,12 @@
-
+import orjson
 from redis.asyncio import Redis
 
+from app.core.config import get_settings
 from app.models.bid import Bid
 from app.models.room import AuctionRoom
 from app.ws.connection_manager import room_manager
+
+settings = get_settings()
 
 async def announce_bid(redis: Redis, room: AuctionRoom, bid: Bid) -> None:
     room_message = {
@@ -19,6 +22,12 @@ async def announce_bid(redis: Redis, room: AuctionRoom, bid: Bid) -> None:
         "version": room.version,
     }
     await room_manager.broadcast(str(room.id), room_message)
+
+    tick_message = {"price": float(room.current_price), "ts": bid.created_at.isoformat()}
+    await redis.publish(
+        f"{settings.REDIS_TICKER_CHANNEL_PREFIX}{room.id}",
+        orjson.dumps(tick_message).decode(),
+    )
 
 async def announce_room_status(redis: Redis, room: AuctionRoom, extra: dict) -> None:
     message = {

@@ -6,7 +6,10 @@ from sqlalchemy import select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.events.schemas import bid_placed_payload
 from app.models.bid import Bid
+from app.models.misc import PriceTick
+from app.models.outbox import OutboxEvent
 from app.models.room import AuctionRoom, RoomStatus
 
 MAX_OPTIMISTIC_RETRIES = 8
@@ -66,7 +69,14 @@ async def place_bid(
             client_ref = client_ref,
         )
         db.add(bid)
-
+        db.add(PriceTick(room_id = room_id, price = amount))
+        db.add(OutboxEvent(
+            aggregate_type = "auction_room",
+            aggregate_id = room_id,
+            partition_key = room_id,
+            event_type = "BidPlaced",
+            payload = bid_placed_payload(room_id, bid.id, bidder_id, amount, previous_price, new_version),
+        ))
 
         try: 
             await db.commit()

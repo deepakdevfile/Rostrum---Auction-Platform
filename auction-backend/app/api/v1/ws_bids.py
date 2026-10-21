@@ -1,4 +1,4 @@
-
+import logging
 import uuid
 
 import orjson
@@ -12,8 +12,8 @@ from app.services.auction_service import BidError, place_bid
 from app.services.realtime import announce_bid
 from app.ws.connection_manager import room_manager
 
+logger = logging.getLogger("ws.bids")
 router = APIRouter()
-
 
 @router.websocket("/ws/rooms/{room_id}/bids")
 async def bid_socket(websocket: WebSocket, room_id: uuid.UUID, token: str = Query(...)):

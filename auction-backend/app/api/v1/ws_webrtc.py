@@ -1,4 +1,4 @@
-
+import logging
 import uuid
 
 import orjson
@@ -10,6 +10,7 @@ from app.db.session import AsyncSessionLocal
 from app.models.misc import ParticipantRole, WebRTCSession
 from app.ws.connection_manager import webrtc_manager
 
+logger = logging.getLogger("ws.webrtc")
 router = APIRouter()
 settings = get_settings()
 

@@ -25,6 +25,7 @@ async def lifespan(app: FastAPI):
     lifecycle_task.cancel()
     await room_manager.shutdown()
     await webrtc_manager.shutdown()
+    # await close_producer()
 
 app = FastAPI(title=settings.APP_NAME, lifespan=lifespan)
 

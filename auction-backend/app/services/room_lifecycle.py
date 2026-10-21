@@ -7,6 +7,9 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import AsyncSessionLocal
+from app.events.schemas import auction_won_payload
+from app.models.bid import Bid
+from app.models.outbox import OutboxEvent
 from app.models.room import AuctionRoom, RoomStatus
 from app.services.realtime import announce_room_status
 
@@ -25,26 +28,26 @@ async def _close_one_expired_room(db: AsyncSession, redis: Redis) -> bool:
     if room is None: 
         return False
 
-    # latest_bid_result = await db.execute(
-    #     select(Bid)
-    #     .where(Bid.room_id == room.id)
-    #     .order_by(Bid.created_at.desc())
-    #     .limit(1)
-    # )
-    # latest_bid = latest_bid_result.scalar_one_or_none()
+    latest_bid_result = await db.execute(
+        select(Bid)
+        .where(Bid.room_id == room.id)
+        .order_by(Bid.created_at.desc())
+        .limit(1)
+    )
+    latest_bid = latest_bid_result.scalar_one_or_none()
 
     room.status = RoomStatus.ended
-    # if latest_bid is not None: 
-    #     room_winner_id = latest_bid.bidder_id
-    #     db.add(
-    #         OutboxEvent(
-    #             aggregate_type = "auction_room",
-    #             aggregate_id = room.id,
-    #             partition_key = room.id,
-    #             event_type = "AuctionWon",
-    #             payload = auction_won_payload(room.id, latest_bid.bidder_id, float(room.current_price), room.seller_id),
-    #         ),
-    #     )
+    if latest_bid is not None: 
+        room.winner_id = latest_bid.bidder_id
+        db.add(
+            OutboxEvent(
+                aggregate_type = "auction_room",
+                aggregate_id = room.id,
+                partition_key = room.id,
+                event_type = "AuctionWon",
+                payload = auction_won_payload(room.id, latest_bid.bidder_id, float(room.current_price), room.seller_id),
+            ),
+        )
 
     await db.commit()
     await db.refresh(room)
@@ -85,7 +88,7 @@ async def run_forever(redis: Redis) -> None:
                 did_work = await _open_one_scheduled_room(db, redis) or did_work
             async with AsyncSessionLocal() as db: 
                 did_work = await _close_one_expired_room(db, redis) or did_work
-        except: 
+        except Exception: 
             logger.exception("room lifecycle tick failed")
         if not did_work:
             await asyncio.sleep(POLL_INTERNAL_SECONDS)
