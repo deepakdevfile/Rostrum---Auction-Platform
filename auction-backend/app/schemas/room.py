@@ -3,6 +3,8 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field, ConfigDict
 
+from app.models.room import RoomStatus
+
 class ItemIn(BaseModel):
     name: str 
     description: str | None = None
@@ -28,9 +30,12 @@ class RoomOut(BaseModel):
     seller_id: uuid.UUID
     title: str
     description: str | None
+    status: RoomStatus
     starting_price: float
     current_price: float
     bid_increment: float
+    winner_id: uuid.UUID | None
+    version: int
     starts_at: datetime
     ends_at: datetime
 

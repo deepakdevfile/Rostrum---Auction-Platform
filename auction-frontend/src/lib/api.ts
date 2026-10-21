@@ -1,4 +1,4 @@
-import type { User, RoomDetail, Bid } from "@/types/models";
+import type { User, RoomDetail, Bid, Room } from "@/types/models";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -61,6 +61,9 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ email, password }),
     }),
+
+  listRooms: (status?: string) => 
+    request<Room[]>(`/api/v1/rooms${status ? `?status_filter=${status}`: ""}`),
 
   getRoom: (roomId: string) => request<RoomDetail>(`/api/v1/rooms/${roomId}`),
 

@@ -8,7 +8,7 @@ from app.api.deps import get_current_user
 from app.db.session import get_db
 from app.models.bid import Bid
 from app.models.item import Item
-from app.models.room import AuctionRoom
+from app.models.room import AuctionRoom, RoomStatus
 from app.models.user import User
 from app.schemas.bid import BidOut
 from app.schemas.room import RoomCreate, RoomDetail, RoomOut
@@ -49,6 +49,14 @@ async def create_room(
 
     # return "Okay, I can listen, send the payload"
     return RoomDetail(**RoomOut.model_validate(room).model_dump(), items=[item])
+
+@router.get("", response_model=list[RoomOut])
+async def list_rooms(status_filter: RoomStatus | None = None, db: AsyncSession = Depends(get_db)):
+    query = select(AuctionRoom).order_by(AuctionRoom.created_at.desc())
+    if status_filter: 
+        query = query.where(AuctionRoom.status == status_filter)
+    result = await db.execute(query)
+    return result.scalars().all()
 
 @router.get("/{room_id}", response_model=RoomDetail)
 async def get_room(room_id: uuid.UUID, db: AsyncSession = Depends(get_db)):
