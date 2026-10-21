@@ -7,6 +7,10 @@ export function wsUrl(path: string, token: string): string {
     return `${base}${path}?token=${encodeURIComponent(token)}`;
 }
 
+export function sseUrl(roomId: string): string{
+    return `${API_URL}/api/v1/rooms/${roomId}/ticker`;
+}
+
 class ApiError extends Error{
     status: number;
     constructor(status: number, message: string){

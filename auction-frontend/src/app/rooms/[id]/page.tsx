@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth-content";
 import { useBidSocket } from "@/hooks/useBidSocket";
-import { usePriceTicker } from "";
+import { usePriceTicker } from "@/hooks/usePriceTicker";
 import { useWebRTC } from "@/hooks/useWebRTC";
 import { BidPanel } from "@/components/BidPanel";
 import { OrderBook } from "@/components/OrderBook";
