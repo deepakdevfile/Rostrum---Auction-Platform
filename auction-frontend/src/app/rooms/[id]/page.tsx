@@ -7,33 +7,55 @@ import { useAuth } from "@/lib/auth-content";
 import { useBidSocket } from "@/hooks/useBidSocket";
 import { useWebRTC } from "@/hooks/useWebRTC";
 import { BidPanel } from "@/components/BidPanel";
+import { OrderBook } from "@/components/OrderBook";
 import { VideoRoom } from "@/components/VideoRoom";
 import { Countdown } from "@/components/Countdown";
-import type { RoomDetail } from "@/types/models";
+import type { RoomDetail, Bid } from "@/types/models";
 
 export default function RoomPage(){
     const { id } = useParams<{ id: string }>();
     const { user, token } = useAuth();
 
     const [room, setRoom] = useState<RoomDetail | null>(null);
-    // const [bids, setBids] = useState<Bid[]>([]);
+    const [bids, setBids] = useState<Bid[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if(!id){
             return;
         }
-        Promise.all([api.getRoom(id)]) //api.getOrderBook(id)
-          .then(([roomRes]) => {
-            //bidsRes
+        Promise.all([api.getRoom(id), api.getOrderBook(id)])
+          .then(([roomRes, bidsRes]) => {
             setRoom(roomRes);
-            // setBids(bidsRes);
+            setBids(bidsRes);
           })
           .finally(() => setLoading(false));
     }, [id]);
 
     const { connected, liveState, lastBid, rejection, placeBid } = useBidSocket(id, token);
     const rtc = useWebRTC(id, token, user?.id ?? null)
+
+    useEffect(() => {
+      if(lastBid?.type !== "bid_accepted"){
+        return;
+      }
+      setBids((prev) => {
+        if(prev.some((b) => b.id === lastBid.bid.id)){
+          return prev;
+        }
+        return [
+          {
+            id: lastBid.bid.id,
+            room_id: lastBid.room_id,
+            bidder_id: lastBid.bid.bidder_id,
+            amount: lastBid.bid.amount,
+            room_version: lastBid.version,
+            created_at: lastBid.bid.created_at,
+          },
+          ...prev
+        ];
+      });
+    }, [lastBid]);
 
     if(loading){
         return (
@@ -104,7 +126,9 @@ export default function RoomPage(){
               onBid = {placeBid}
               isAuthenticated = {!!user}
             />
-            order book component winner status
+            <OrderBook bids={bids} /> 
+            
+            winner status
           </div>
         </div>
       </div>

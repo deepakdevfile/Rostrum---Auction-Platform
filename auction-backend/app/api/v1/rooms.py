@@ -4,13 +4,14 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from app.schemas.room import RoomCreate, RoomDetail, RoomOut
-from app.db.session import get_db
-from app.models.user import User
 from app.api.deps import get_current_user
-from app.models.room import AuctionRoom
+from app.db.session import get_db
+from app.models.bid import Bid
 from app.models.item import Item
-
+from app.models.room import AuctionRoom
+from app.models.user import User
+from app.schemas.bid import BidOut
+from app.schemas.room import RoomCreate, RoomDetail, RoomOut
 
 router = APIRouter(prefix = "/rooms", tags = ["rooms"])
 
@@ -59,3 +60,13 @@ async def get_room(room_id: uuid.UUID, db: AsyncSession = Depends(get_db)):
     items_result = await db.execute(select(Item).where(Item.room_id == room_id))
     items = items_result.scalars().all()
     return RoomDetail(**RoomOut.model_validate(room).model_dump(), items = items)
+
+@router.get("/{room_id}/bids", response_model=list[BidOut])
+async def get_order_book(room_id: uuid.UUID, limit: int = 25, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(
+        select(Bid)
+        .where(Bid.room_id == room_id)
+        .order_by(Bid.created_at.desc())
+        .limit(limit)
+    )
+    return result.scalars().all()

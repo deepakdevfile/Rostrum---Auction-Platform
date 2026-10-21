@@ -1,4 +1,4 @@
-import type { User, RoomDetail } from "@/types/models";
+import type { User, RoomDetail, Bid } from "@/types/models";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -59,6 +59,9 @@ export const api = {
     }),
 
   getRoom: (roomId: string) => request<RoomDetail>(`/api/v1/rooms/${roomId}`),
+
+  getOrderBook: (roomId: string, limit = 25) => 
+    request<Bid[]>(`/api/v1/rooms/${roomId}/bids?limit=${limit}`),
 
   createRoom: (
     token: string,
