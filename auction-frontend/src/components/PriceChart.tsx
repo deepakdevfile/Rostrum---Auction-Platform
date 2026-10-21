@@ -9,6 +9,7 @@ export function PriceChart({ ticks }: { ticks: PriceTick[] }){
     const containerRef = useRef<HTMLDivElement | null>(null);
     const chartRef = useRef<IChartApi | null>(null);
     const seriesRef = useRef<ISeriesApi<"Line"> | null>(null);
+    console.log(ticks);
 
     useEffect(() => {
         if(!containerRef.current){

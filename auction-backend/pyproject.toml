@@ -11,6 +11,7 @@ dependencies = [
     "pwdlib[bcrypt]>=0.3.1",
     "python-jose[cryptography]>=3.5.0",
     "sqlalchemy[asyncio]>=2.1.1",
+    "sse-starlette>=3.5.0",
 ]
 
 [tool.fastapi]
