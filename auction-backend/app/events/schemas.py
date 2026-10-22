@@ -16,8 +16,16 @@ class BidPlacedEvent(TypedDict):
 class AuctionWonEvent(TypedDict):
     event_type: Literal["AuctionWon"]
     room_id: str
+    order_id: str
     winner_id: str
-    final_price: str
+    reason: str
+    occurred_at: str
+
+class PaymentFailedEvent(TypedDict):
+    event_type: Literal["PaymentFailed"]
+    room_id: str
+    winner_id: str
+    final_price: float
     seller_id: str
     occurred_at: str
 
@@ -55,5 +63,20 @@ def auction_won_payload(
         winner_id=str(winner_id),
         final_price=float(final_price),
         seller_id=str(seller_id),
+        occurred_at=now_iso(),
+    )
+
+def payment_failed_payload(
+        room_id: uuid.UUID,
+        order_id: uuid.UUID,
+        winner_id: uuid.UUID,
+        reason: str
+) -> dict[str, Any]:
+    return PaymentFailedEvent(
+        event_type="PaymentFailed",
+        room_id=str(room_id),
+        order_id = str(order_id),
+        winner_id = str(winner_id),
+        reason = reason,
         occurred_at=now_iso(),
     )
