@@ -1,4 +1,4 @@
-import type { User, RoomDetail, Bid, Room } from "@/types/models";
+import type { User, RoomDetail, Bid, Room, Order } from "@/types/models";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -87,6 +87,9 @@ export const api = {
       token,
       body: JSON.stringify(payload),
     }),
+
+    getOrderForRoom: (token: string, roomId: string) => 
+      request<Order>(`/api/v1/orders/by-room/${roomId}`, { token }),
 
     iceConfig: () => request<{ iceServers: RTCIceServer[] }>("/rtc/ice-config"),
 };

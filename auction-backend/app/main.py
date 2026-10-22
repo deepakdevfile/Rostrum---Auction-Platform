@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.deps import get_redis
 from app.api.v1 import api_router, ws_router
 from app.core.config import get_settings
+from app.events.producer import close_producer
 from app.services import room_lifecycle
 from app.ws.connection_manager import webrtc_manager, room_manager
 
@@ -25,7 +26,7 @@ async def lifespan(app: FastAPI):
     lifecycle_task.cancel()
     await room_manager.shutdown()
     await webrtc_manager.shutdown()
-    # await close_producer()
+    await close_producer()
 
 app = FastAPI(title=settings.APP_NAME, lifespan=lifespan)
 

@@ -49,6 +49,22 @@ export interface PriceTick {
     ts: string;
 }
 
+export interface OrderPayment{
+    id: string;
+    status: "pending" | "succeeded" | "failed";
+    failure_reason: string | null;
+    created_at: string;
+}
+
+export interface Order {
+    id: string;
+    room_id: string;
+    winner_id: string;
+    amount: number;
+    status: "pending" | "paid" | "failed" | "refunded";
+    payments: OrderPayment[];
+}
+
 export type BidSocketServerMessage = 
     | { type: "sync"; room_id: string; current_price: number; version: number; status: RoomStatus }
     | { type: "bid_accepted"; room_id: string; bid: { id: string; bidder_id: string; amount: number; created_at: string }; current_price: number; version: number }

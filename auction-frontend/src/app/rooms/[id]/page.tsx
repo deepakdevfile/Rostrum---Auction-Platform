@@ -13,6 +13,7 @@ import { PriceChart } from "@/components/PriceChart";
 import { VideoRoom } from "@/components/VideoRoom";
 import { Countdown } from "@/components/Countdown";
 import type { RoomDetail, Bid } from "@/types/models";
+import { OrderStatus } from "@/components/OrderStatus";
 
 export default function RoomPage(){
     const { id } = useParams<{ id: string }>();
@@ -59,6 +60,12 @@ export default function RoomPage(){
         ];
       });
     }, [lastBid]);
+
+    useEffect(() => {
+      if(liveState.status === "ended" && room && room.status !== "ended"){
+        api.getRoom(id).then(setRoom);
+      }
+    }, [liveState.status, room, id]);
 
     if(loading){
         return (
@@ -132,7 +139,10 @@ export default function RoomPage(){
               isAuthenticated = {!!user}
             />
             <OrderBook bids={bids} /> 
-            
+
+            {status === "ended" && room.winner_id === user?.id && token && (
+              <OrderStatus roomId={room.id} token={token} />
+            )}
             {status === "ended" && room.winner_id && (
               <div className="border border-brass/40 bg-brass/10 px-4 py-3 text-sm text-brass">
                 {room.winner_id === user?.id
