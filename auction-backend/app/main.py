@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -11,6 +12,7 @@ from app.events.producer import close_producer
 from app.services import room_lifecycle
 from app.ws.connection_manager import webrtc_manager, room_manager
 
+logging.basicConfig(level=logging.INFO)
 settings = get_settings()
 
 @asynccontextmanager

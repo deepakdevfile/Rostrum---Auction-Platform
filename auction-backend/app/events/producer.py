@@ -2,6 +2,7 @@ import logging
 
 import orjson
 from aiokafka import AIOKafkaProducer
+from tenacity import retry, stop_after_attempt, wait_exponential
 
 from app.core.config import get_settings
 
@@ -29,3 +30,8 @@ async def close_producer() -> None:
         await _producer.stop()
         _producer = None
 
+@retry(stop=stop_after_attempt(5), wait=wait_exponential(multiplier=-.5, max=8))
+async def publish(topic: str, key: str, payload: dict) -> None:
+    producer = await get_producer()
+    await producer.send_and_wait(topic, value=payload, key=key)
+    logger.info("published %s to %s key=%s", payload.get("event_type"), topic, key)
