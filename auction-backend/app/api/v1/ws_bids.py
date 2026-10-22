@@ -11,6 +11,7 @@ from app.models.room import AuctionRoom
 from app.services.auction_service import BidError, place_bid
 from app.services.realtime import announce_bid
 from app.ws.connection_manager import room_manager
+from app.schemas.bid import BidCreate
 
 logger = logging.getLogger("ws.bids")
 router = APIRouter()
@@ -50,10 +51,8 @@ async def bid_socket(websocket: WebSocket, room_id: uuid.UUID, token: str = Quer
         while True: 
             raw = await websocket.receive_text()
             try: 
-                msg = orjson.loads(raw)
-                amount = float(msg["amount"])
-                client_ref = uuid.UUID(msg["client_ref"])
-            except (KeyError, ValueError, orjson.JSONDecodeError):
+                bid_in = BidCreate.model_validate_json(raw)
+            except ValueError:
                 await websocket.send_text(
                     orjson.dumps({"type": "error", "reason": "bad_request"}).decode()
                 )
@@ -61,7 +60,7 @@ async def bid_socket(websocket: WebSocket, room_id: uuid.UUID, token: str = Quer
 
             async with AsyncSessionLocal() as db:
                 try: 
-                    result = await place_bid(db, room_id, user.id, amount, client_ref)
+                    result = await place_bid(db, room_id, user.id, bid_in.amount, bid_in.client_ref)
                 except BidError as e:
                     await websocket.send_text(
                         orjson.dumps({

@@ -1,7 +1,11 @@
 import uuid
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
+
+class BidCreate(BaseModel):
+    amount: float = Field(gt=0)
+    client_ref: uuid.UUID
 
 class BidOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)

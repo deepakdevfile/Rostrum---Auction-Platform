@@ -44,5 +44,5 @@ app.include_router(api_router)
 app.include_router(ws_router)
 
 @app.get("/")
-def main():
-    return {"message": "Hello World"}
+async def main():
+    return {"status": "ok"}
